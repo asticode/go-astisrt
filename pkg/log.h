@@ -1,0 +1,1 @@
+void astisrt_setloghandler(int b);
