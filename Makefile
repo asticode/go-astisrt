@@ -11,9 +11,9 @@ install-srt:
 	cd $(srcPath) && make install
 
 generate:
-	go run internal/cmd/options/main.go
-	go run internal/cmd/stats/main.go
-	go run internal/cmd/wrap/main.go
+	go run internal/cmd/generate/options/main.go
+	go run internal/cmd/generate/stats/main.go
+	go run internal/cmd/generate/wrap/main.go
 
 test-coverage:
 	go test -coverprofile cover.out github.com/asticode/go-astisrt/pkg
