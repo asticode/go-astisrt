@@ -6,7 +6,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// TODO Why is this test taking 5s ?
+type disconnectResult struct {
+	c   *Connection
+	err error
+}
+
 func TestDial(t *testing.T) {
 	// Quiet logs
 	SetLogHandler(func(l LogLevel, file, area, msg string, line int) {})
@@ -29,11 +33,11 @@ func TestDial(t *testing.T) {
 	go func() { chanListenAndServe <- srv.ListenAndServe(1) }()
 
 	// Dial
-	chanOnDisconnect := make(chan *Connection)
+	chanOnDisconnect := make(chan disconnectResult)
 	c, err := Dial(DialOptions{
 		ConnectionOptions: []ConnectionOption{WithStreamid("streamid")},
 		Host:              "127.0.0.1",
-		OnDisconnect:      func(c *Connection, err error) { chanOnDisconnect <- c },
+		OnDisconnect:      func(c *Connection, err error) { chanOnDisconnect <- disconnectResult{c: c, err: err} },
 		Port:              4000,
 	})
 	require.NoError(t, err)
@@ -44,5 +48,7 @@ func TestDial(t *testing.T) {
 	s, err := c.Options().Streamid()
 	require.NoError(t, err)
 	require.Equal(t, "streamid", s)
-	require.Equal(t, c, <-chanOnDisconnect)
+	dr := <-chanOnDisconnect
+	require.Equal(t, c, dr.c)
+	require.ErrorIs(t, dr.err, ErrEconnlost)
 }
