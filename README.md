@@ -216,7 +216,7 @@ defer s.Close()
 doneConnect := make(chan error)
 s.SetConnectCallback(func(s *astisrt.Socket, addr *net.UDPAddr, token int, err error) {
     doneConnect <- err
-}
+})
 
 // Set passphrase
 s.Options().SetPassphrase("passphrase")
