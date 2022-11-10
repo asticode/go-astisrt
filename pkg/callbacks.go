@@ -65,7 +65,7 @@ func go2cListenCallback(opaque unsafe.Pointer, u C.SRTSOCKET, version C.int, pee
 
 	// No callback
 	if !ok || cb == nil {
-		return C.SRT_SUCCESS
+		return int(C.SRT_SUCCESS)
 	}
 
 	// Create socket
@@ -76,14 +76,14 @@ func go2cListenCallback(opaque unsafe.Pointer, u C.SRTSOCKET, version C.int, pee
 
 	// Callback
 	if ok = cb(s, int(version), addr, C.GoString(streamid)); !ok {
-		return C.SRT_ERROR
+		return int(C.SRT_ERROR)
 	}
 
 	// Store socket so that Accept() gets the proper Go object
 	acceptedSocketsMutex.Lock()
 	acceptedSockets[u] = s
 	acceptedSocketsMutex.Unlock()
-	return C.SRT_SUCCESS
+	return int(C.SRT_SUCCESS)
 }
 
 // https://github.com/Haivision/srt/blob/master/docs/API/API-functions.md#srt_listen_callback
