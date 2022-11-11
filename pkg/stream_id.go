@@ -125,6 +125,7 @@ func (s StreamID) String() (str string) {
 		for k, v := range s {
 			ss = append(ss, string(k)+"="+v.Value)
 		}
+		sort.Strings(ss)
 		str += ":" + strings.Join(ss, ",")
 	}
 	return

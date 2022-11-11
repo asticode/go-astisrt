@@ -2,6 +2,7 @@ package astisrt
 
 // #cgo LDFLAGS: -lsrt
 // #include <srt/srt.h>
+// #include "static_consts.h"
 import "C"
 import (
 	"net"
@@ -76,7 +77,7 @@ func go2cListenCallback(opaque unsafe.Pointer, u C.SRTSOCKET, version C.int, pee
 
 	// Callback
 	if ok = cb(s, int(version), addr, C.GoString(streamid)); !ok {
-		return int(C.SRT_ERROR)
+		return int(C.SRT_ERROR_)
 	}
 
 	// Store socket so that Accept() gets the proper Go object
