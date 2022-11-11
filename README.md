@@ -257,6 +257,7 @@ For your GO code to pick up `srtlib` dependency automatically, you'll need to ad
 (don't forget to replace `{{ path to your working directory }}` with the absolute path to your working directory)
 
 ```sh
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:{{ path to your working directory }}/tmp/v1.5.0/lib/",
 export CGO_LDFLAGS="-L{{ path to your working directory }}/tmp/v1.5.0/lib/",
 export CGO_CXXFLAGS="-I{{ path to your working directory }}/tmp/v1.5.0/include/",
 export PKG_CONFIG_PATH="{{ path to your working directory }}/tmp/v1.5.0/lib/pkgconfig",
