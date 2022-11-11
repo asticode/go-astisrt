@@ -1,5 +1,7 @@
 package astisrt
 
+// #cgo darwin LDFLAGS: -L/opt/homebrew/lib
+// #cgo darwin CFLAGS: -I/opt/homebrew/include
 // #cgo LDFLAGS: -lsrt
 // #include <srt/srt.h>
 import "C"
