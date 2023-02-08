@@ -111,20 +111,20 @@ func cAccept(s C.SRTSOCKET, addr *C.struct_sockaddr, size *C.int) (C.SRTSOCKET, 
 	return ret, nil
 }
 
-func cListenCallback(lsn C.SRTSOCKET) error {
+func cListenCallback(lsn *C.SRTSOCKET) error {
 	var srtErrno C.int
 	var sysErrno C.int
-	ret := C.astisrt_listen_callback(lsn, unsafe.Pointer(&lsn), &srtErrno, &sysErrno)
+	ret := C.astisrt_listen_callback(*lsn, unsafe.Pointer(lsn), &srtErrno, &sysErrno)
 	if ret == C.SRT_ERROR_ {
 		return newError(srtErrno, sysErrno)
 	}
 	return nil
 }
 
-func cConnectCallback(clr C.SRTSOCKET) error {
+func cConnectCallback(clr *C.SRTSOCKET) error {
 	var srtErrno C.int
 	var sysErrno C.int
-	ret := C.astisrt_connect_callback(clr, unsafe.Pointer(&clr), &srtErrno, &sysErrno)
+	ret := C.astisrt_connect_callback(*clr, unsafe.Pointer(clr), &srtErrno, &sysErrno)
 	if ret == C.SRT_ERROR_ {
 		return newError(srtErrno, sysErrno)
 	}
