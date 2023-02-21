@@ -26,7 +26,8 @@ var (
 // For groups only
 // https://github.com/Haivision/srt/blob/master/docs/API/API-functions.md#srt_connect_callback
 func (s *Socket) SetConnectCallback(c ConnectCallback) (err error) {
-	if err = cConnectCallback(s.u); err != nil {
+	// We need to provide a GO pointer here otherwise it won't retrieve the proper callback later
+	if err = cConnectCallback(&s.u); err != nil {
 		return
 	}
 	connectCallbacksMutex.Lock()
@@ -89,7 +90,8 @@ func go2cListenCallback(opaque unsafe.Pointer, u C.SRTSOCKET, version C.int, pee
 
 // https://github.com/Haivision/srt/blob/master/docs/API/API-functions.md#srt_listen_callback
 func (s *Socket) SetListenCallback(c ListenCallback) (err error) {
-	if err = cListenCallback(s.u); err != nil {
+	// We need to provide a GO pointer here otherwise it won't retrieve the proper callback later
+	if err = cListenCallback(&s.u); err != nil {
 		return
 	}
 	listenCallbacksMutex.Lock()

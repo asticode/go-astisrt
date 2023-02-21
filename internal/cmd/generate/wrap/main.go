@@ -383,14 +383,12 @@ var fns = []fn{
 		CName: "listen_callback",
 		GoArgs: []fnArg{
 			{
-				Name: "lsn",
-				Type: "C.SRTSOCKET",
+				Format: "*%s",
+				Name:   "lsn",
+				Type:   "*C.SRTSOCKET",
 			},
 			{
-				// We need to provide a GO pointer otherwise, if we provide a C
-				// pointer later, exported go function sometimes doesn't retrieve
-				// the proper value
-				Name: "unsafe.Pointer(&lsn)",
+				Name: "unsafe.Pointer(lsn)",
 			},
 		},
 		GoName: "ListenCallback",
@@ -412,14 +410,12 @@ var fns = []fn{
 		CName: "connect_callback",
 		GoArgs: []fnArg{
 			{
-				Name: "clr",
-				Type: "C.SRTSOCKET",
+				Format: "*%s",
+				Name:   "clr",
+				Type:   "*C.SRTSOCKET",
 			},
 			{
-				// We need to provide a GO pointer otherwise, if we provide a C
-				// pointer later, exported go function sometimes doesn't retrieve
-				// the proper value
-				Name: "unsafe.Pointer(&clr)",
+				Name: "unsafe.Pointer(clr)",
 			},
 		},
 		GoName: "ConnectCallback",
