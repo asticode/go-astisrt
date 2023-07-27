@@ -5,7 +5,8 @@ currentDir := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 install-srt:
 	rm -rf $(srcPath)
 	mkdir -p $(srcPath)
-	git clone https://github.com/Haivision/srt $(srcPath)
+	# cd $(srcPath) is necessary for windows build since otherwise git doesn't clone in the proper dir
+	cd $(srcPath) && git clone https://github.com/Haivision/srt $(srcPath)
 	cd $(srcPath) && git checkout $(version)
 	cd $(srcPath) && ./configure --prefix=.. $(configure)
 	cd $(srcPath) && make

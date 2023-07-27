@@ -25,7 +25,45 @@ func regularPortFromSockAddrPort(port uint16) uint16 {
 	return orderPortBytes(port, binary.BigEndian)
 }
 
-func sockAddrFromHostAndPort(host string, port uint16) (addr *C.struct_sockaddr, size C.int, err error) {
+type sockaddr struct {
+	inet4 *syscall.RawSockaddrInet4
+	inet6 *syscall.RawSockaddrInet6
+}
+
+func (sa *sockaddr) addr() *C.struct_sockaddr {
+	if sa.inet4 != nil {
+		return (*C.struct_sockaddr)(unsafe.Pointer(sa.inet4))
+	} else if sa.inet6 != nil {
+		return (*C.struct_sockaddr)(unsafe.Pointer(sa.inet6))
+	}
+	return nil
+}
+
+func (sa *sockaddr) size() C.int {
+	if sa.inet4 != nil {
+		return syscall.SizeofSockaddrInet4
+	} else if sa.inet6 != nil {
+		return syscall.SizeofSockaddrInet6
+	}
+	return 0
+}
+
+func (sa *sockaddr) toUDP() *net.UDPAddr {
+	if sa.inet4 != nil {
+		return &net.UDPAddr{
+			IP:   sa.inet4.Addr[:],
+			Port: int(regularPortFromSockAddrPort(sa.inet4.Port)),
+		}
+	} else if sa.inet6 != nil {
+		return &net.UDPAddr{
+			IP:   sa.inet6.Addr[:],
+			Port: int(regularPortFromSockAddrPort(sa.inet6.Port)),
+		}
+	}
+	return nil
+}
+
+func newSockaddrFromHostAndPort(host string, port uint16) (addr *sockaddr, err error) {
 	// Parse ip
 	ip := net.ParseIP(host)
 	if ip == nil {
@@ -46,33 +84,25 @@ func sockAddrFromHostAndPort(host string, port uint16) (addr *C.struct_sockaddr,
 		ip = ips[0]
 	}
 
-	// Create addr
+	// Check ip
 	if v := ip.To4(); v != nil {
-		// Create raw
-		raw := syscall.RawSockaddrInet4{
+		// Create sockaddr
+		addr = &sockaddr{inet4: &syscall.RawSockaddrInet4{
 			Family: unix.AF_INET,
 			Port:   sockAddrPortFromRegularPort(port),
-		}
+		}}
 
 		// Copy addr
-		copy(raw.Addr[:], v)
-
-		// Create addr
-		addr = (*C.struct_sockaddr)(unsafe.Pointer(&raw))
-		size = syscall.SizeofSockaddrInet4
+		copy(addr.inet4.Addr[:], v)
 	} else if v := ip.To16(); v != nil {
-		// Create raw
-		raw := syscall.RawSockaddrInet6{
+		// Create sockaddr
+		addr = &sockaddr{inet6: &syscall.RawSockaddrInet6{
 			Family: unix.AF_INET6,
 			Port:   sockAddrPortFromRegularPort(port),
-		}
+		}}
 
 		// Copy addr
-		copy(raw.Addr[:], v)
-
-		// Create addr
-		addr = (*C.struct_sockaddr)(unsafe.Pointer(&raw))
-		size = syscall.SizeofSockaddrInet6
+		copy(addr.inet6.Addr[:], v)
 	} else {
 		err = errors.New("astisrt: ip is neither IPv4 nor IPv6")
 		return
@@ -80,20 +110,12 @@ func sockAddrFromHostAndPort(host string, port uint16) (addr *C.struct_sockaddr,
 	return
 }
 
-func udpAddrFromSockaddr(rawAny *syscall.RawSockaddrAny) (addr *net.UDPAddr, err error) {
-	switch rawAny.Addr.Family {
+func newSockaddrFromSockaddrAny(in *syscall.RawSockaddrAny) (out *sockaddr, err error) {
+	switch in.Addr.Family {
 	case unix.AF_INET6:
-		raw6 := (*syscall.RawSockaddrInet6)(unsafe.Pointer(rawAny))
-		addr = &net.UDPAddr{
-			IP:   raw6.Addr[:],
-			Port: int(regularPortFromSockAddrPort(raw6.Port)),
-		}
+		out = &sockaddr{inet6: (*syscall.RawSockaddrInet6)(unsafe.Pointer(in))}
 	case unix.AF_INET:
-		raw4 := (*syscall.RawSockaddrInet4)(unsafe.Pointer(rawAny))
-		addr = &net.UDPAddr{
-			IP:   raw4.Addr[:],
-			Port: int(regularPortFromSockAddrPort(raw4.Port)),
-		}
+		out = &sockaddr{inet4: (*syscall.RawSockaddrInet4)(unsafe.Pointer(in))}
 	default:
 		err = errors.New("astisrt: addr is neither IPv4 nor IPv6")
 		return

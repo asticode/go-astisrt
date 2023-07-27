@@ -51,11 +51,14 @@ func go2cConnectCallback(opaque unsafe.Pointer, u C.SRTSOCKET, errorcode C.int, 
 	// Create socket
 	s := newSocketFromC(u)
 
-	// Create addr
-	addr, _ := udpAddrFromSockaddr((*syscall.RawSockaddrAny)(unsafe.Pointer(peeraddr)))
+	// Create sockaddr
+	sa, err := newSockaddrFromSockaddrAny((*syscall.RawSockaddrAny)(unsafe.Pointer(peeraddr)))
+	if err != nil {
+		return
+	}
 
 	// Callback
-	cb(s, addr, int(token), newError(errorcode, 0))
+	cb(s, sa.toUDP(), int(token), newError(errorcode, 0))
 }
 
 //export go2cListenCallback
@@ -73,11 +76,14 @@ func go2cListenCallback(opaque unsafe.Pointer, u C.SRTSOCKET, version C.int, pee
 	// Create socket
 	s := newSocketFromC(u)
 
-	// Create addr
-	addr, _ := udpAddrFromSockaddr((*syscall.RawSockaddrAny)(unsafe.Pointer(peeraddr)))
+	// Create sockaddr
+	sa, err := newSockaddrFromSockaddrAny((*syscall.RawSockaddrAny)(unsafe.Pointer(peeraddr)))
+	if err != nil {
+		return int(C.SRT_ERROR_)
+	}
 
 	// Callback
-	if ok = cb(s, int(version), addr, C.GoString(streamid)); !ok {
+	if ok = cb(s, int(version), sa.toUDP(), C.GoString(streamid)); !ok {
 		return int(C.SRT_ERROR_)
 	}
 

@@ -1,0 +1,75 @@
+name: Test
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  test:
+    strategy:
+      matrix:
+        # Use macos-latest once latest version is compatible with libsrt 
+        os: [ubuntu-latest, macos-13]
+
+    env:
+      LIBSRT_VERSION: v1.5.0
+    
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+
+    - if: ${{ runner.os == 'Windows' }}
+      name: Set windows libsrt path
+      run: |
+        echo "LIBSRT_PATH=$(cygpath -u $(cd ~ && pwd))/libsrt" >> $env:GITHUB_ENV
+
+    - if: ${{ runner.os != 'Windows' }}
+      name: Set non-windows libsrt path
+      run: |
+        echo "LIBSRT_PATH=$(echo ~)/libsrt" >> $GITHUB_ENV
+
+    - name: Cache libsrt
+      id: cache-libsrt
+      uses: actions/cache@v3
+      with:
+        path: ${{ env.LIBSRT_PATH }}
+        key: libsrt-${{ env.LIBSRT_VERSION }}-${{ runner.os }}
+
+    - if: ${{ steps.cache-libsrt.outputs.cache-hit != 'true' }}
+      name: Install libsrt
+      run: |
+        make install-srt srcPath=${{ env.LIBSRT_PATH }}/src version=${{ env.LIBSRT_VERSION }}
+
+    - name: Set environment variables
+      run: |
+        echo "LD_LIBRARY_PATH=${{ env.LIBSRT_PATH }}/lib" >> $GITHUB_ENV
+        echo "CGO_LDFLAGS=-L${{ env.LIBSRT_PATH }}/lib/" >> $GITHUB_ENV
+        echo "CGO_CFLAGS=-I${{ env.LIBSRT_PATH }}/include/" >> $GITHUB_ENV
+        echo "PKG_CONFIG_PATH=${{ env.LIBSRT_PATH }}/lib/pkgconfig" >> $GITHUB_ENV
+
+    - if: ${{ runner.os == 'macOS' }}
+      name: Set darwin environment variables
+      run: |
+        echo "DYLD_FALLBACK_LIBRARY_PATH=${{ env.LIBSRT_PATH }}/lib" >> $GITHUB_ENV
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.20'
+
+    - name: Install dependencies
+      run: go mod download
+
+    - name: Run tests
+      run: go test -race -covermode atomic -coverprofile=covprofile ./...
+
+    - if: github.event_name != 'pull_request'
+      name: Send coverage
+      env:
+        COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
+      run: |
+        go install github.com/mattn/goveralls@latest
+        goveralls -coverprofile=covprofile -service=github

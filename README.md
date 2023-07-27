@@ -1,3 +1,8 @@
+[![GoReportCard](http://goreportcard.com/badge/github.com/asticode/go-astisrt)](http://goreportcard.com/report/github.com/asticode/go-astisrt)
+[![GoDoc](https://godoc.org/github.com/asticode/go-astisrt?status.svg)](https://godoc.org/github.com/asticode/go-astisrt)
+[![Test](https://github.com/asticode/go-astisrt/actions/workflows/test.yml/badge.svg)](https://github.com/asticode/go-astisrt/actions/workflows/test.yml)
+[![Coveralls](https://coveralls.io/repos/github/asticode/go-astisrt/badge.svg?branch=master)](https://coveralls.io/github/asticode/go-astisrt)
+
 # SRT server, client and socket in GO
 
 First off, a big thanks to the [official GO bindings](https://github.com/Haivision/srtgo) that was an amazing source of inspiration for this project.
@@ -259,6 +264,6 @@ For your GO code to pick up `srtlib` dependency automatically, you'll need to ad
 ```sh
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:{{ path to your working directory }}/tmp/v1.5.0/lib/",
 export CGO_LDFLAGS="-L{{ path to your working directory }}/tmp/v1.5.0/lib/",
-export CGO_CXXFLAGS="-I{{ path to your working directory }}/tmp/v1.5.0/include/",
+export CGO_CFLAGS="-I{{ path to your working directory }}/tmp/v1.5.0/include/",
 export PKG_CONFIG_PATH="{{ path to your working directory }}/tmp/v1.5.0/lib/pkgconfig",
 ```

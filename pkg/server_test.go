@@ -270,7 +270,7 @@ func TestServerShutdownDeadlineExceeded(t *testing.T) {
 	defer c.Close()
 
 	// Shutdown
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond)
 	defer cancel()
 	err = srv.Shutdown(ctx)
 	require.ErrorIs(t, err, context.DeadlineExceeded)
