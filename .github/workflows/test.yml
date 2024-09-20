@@ -19,7 +19,7 @@ jobs:
     
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - if: ${{ runner.os == 'Windows' }}
       name: Set windows libsrt path
@@ -33,7 +33,7 @@ jobs:
 
     - name: Cache libsrt
       id: cache-libsrt
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{ env.LIBSRT_PATH }}
         key: libsrt-${{ env.LIBSRT_VERSION }}-${{ runner.os }}
@@ -56,7 +56,7 @@ jobs:
         echo "DYLD_FALLBACK_LIBRARY_PATH=${{ env.LIBSRT_PATH }}/lib" >> $GITHUB_ENV
 
     - name: Set up Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
         go-version: '1.20'
 

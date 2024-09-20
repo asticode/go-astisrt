@@ -49,18 +49,18 @@ func Dial(o DialOptions) (c *Connection, err error) {
 		return
 	}
 
-	// Connect
-	if c.addr, err = s.Connect(o.Host, o.Port); err != nil {
-		err = fmt.Errorf("astisrt: connecting failed: %w", err)
-		return
-	}
-
 	// Set callbacks
 	if o.OnDisconnect != nil {
 		if err = s.SetConnectCallback(o.OnDisconnect.connectCallback(c)); err != nil {
 			err = fmt.Errorf("astisrt: setting connect callback failed: %w", err)
 			return
 		}
+	}
+
+	// Connect
+	if c.addr, err = s.Connect(o.Host, o.Port); err != nil {
+		err = fmt.Errorf("astisrt: connecting failed: %w", err)
+		return
 	}
 	return
 }
