@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -77,7 +76,7 @@ func main() {
 func staticConsts(dir string) (cs []staticConst, err error) {
 	// Read header
 	var b []byte
-	if b, err = ioutil.ReadFile(filepath.Join(dir, "tmp", version, "include", "srt", "srt.h")); err != nil {
+	if b, err = os.ReadFile(filepath.Join(dir, "tmp", version, "include", "srt", "srt.h")); err != nil {
 		err = fmt.Errorf("main: reading header failed: %w", err)
 		return
 	}
