@@ -16,7 +16,7 @@ However a few things bothered me in it therefore I decided to write my own bindi
 - [x] make sure pointers are the same between the `ListenCallback` and `Accept()`, and between the `ConnectCallback` and `Connect()` 
 - [x] only use blocking mode in high level entities
 
-`astisrt` has been tested on `v1.5.0`.
+`astisrt` has been tested on `v1.5.3`.
 
 ## Examples
 
@@ -262,8 +262,8 @@ For your GO code to pick up `srtlib` dependency automatically, you'll need to ad
 (don't forget to replace `{{ path to your working directory }}` with the absolute path to your working directory)
 
 ```sh
-export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:{{ path to your working directory }}/tmp/v1.5.0/lib/",
-export CGO_LDFLAGS="-L{{ path to your working directory }}/tmp/v1.5.0/lib/",
-export CGO_CFLAGS="-I{{ path to your working directory }}/tmp/v1.5.0/include/",
-export PKG_CONFIG_PATH="{{ path to your working directory }}/tmp/v1.5.0/lib/pkgconfig",
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:{{ path to your working directory }}/tmp/v1.5.3/lib/",
+export CGO_LDFLAGS="-L{{ path to your working directory }}/tmp/v1.5.3/lib/",
+export CGO_CFLAGS="-I{{ path to your working directory }}/tmp/v1.5.3/include/",
+export PKG_CONFIG_PATH="{{ path to your working directory }}/tmp/v1.5.3/lib/pkgconfig",
 ```

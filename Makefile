@@ -1,4 +1,4 @@
-version = "v1.5.0"
+version = "v1.5.3"
 srcPath = "tmp/$(version)/src"
 currentDir := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 

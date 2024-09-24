@@ -10,7 +10,7 @@ import (
 	"text/template"
 )
 
-const version = "v1.5.0"
+const version = "v1.5.3"
 
 var r = regexp.MustCompile(`\nstatic const ([^ ]+) ([^ ]+) =`)
 

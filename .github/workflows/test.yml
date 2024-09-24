@@ -15,7 +15,7 @@ jobs:
         os: [ubuntu-latest, macos-13]
 
     env:
-      LIBSRT_VERSION: v1.5.0
+      LIBSRT_VERSION: v1.5.3
     
     runs-on: ${{ matrix.os }}
     steps:

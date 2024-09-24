@@ -6,7 +6,7 @@ RUN \
     tclsh pkg-config cmake libssl-dev build-essential git \
   && apt-get clean
 
-ENV SRT_VERSION="v1.5.0"
+ENV SRT_VERSION="v1.5.3"
 
 RUN \
   cd /opt && \
