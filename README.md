@@ -249,21 +249,13 @@ s.Close()
 
 You can find the instructions to install `srtlib` [here](https://github.com/Haivision/srt/tree/master/docs/build).
 
-However if you don't feel like doing it manually you can use the following command:
-
-```sh
-$ make install-srt
-```
-
-`srtlib` will be built from source in a directory named `tmp` and located in you working directory.
-
 For your GO code to pick up `srtlib` dependency automatically, you'll need to add the following environment variables:
 
-(don't forget to replace `{{ path to your working directory }}` with the absolute path to your working directory)
+(don't forget to replace `{{ path to your srt directory }}` with the absolute path to your srt directory)
 
 ```sh
-export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:{{ path to your working directory }}/tmp/v1.5.3/lib/",
-export CGO_LDFLAGS="-L{{ path to your working directory }}/tmp/v1.5.3/lib/",
-export CGO_CFLAGS="-I{{ path to your working directory }}/tmp/v1.5.3/include/",
-export PKG_CONFIG_PATH="{{ path to your working directory }}/tmp/v1.5.3/lib/pkgconfig",
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:{{ path to your srt directory }}/lib/",
+export CGO_LDFLAGS="-L{{ path to your srt directory }}/lib/",
+export CGO_CFLAGS="-I{{ path to your srt directory }}/include/",
+export PKG_CONFIG_PATH="{{ path to your srt directory }}/lib/pkgconfig",
 ```

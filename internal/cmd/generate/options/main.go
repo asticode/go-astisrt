@@ -13,8 +13,6 @@ import (
 	"unicode"
 )
 
-const version = "v1.5.3"
-
 var (
 	r1 = regexp.MustCompile("\\[`([\\w]+)`\\]")
 	r2 = regexp.MustCompile("`([\\w]+)`")
@@ -280,7 +278,7 @@ func main() {
 		log.Fatal(fmt.Errorf("main: getting working directory failed: %w", err))
 	}
 
-	opts, enums, err := options(dir)
+	opts, enums, err := options()
 	if err != nil {
 		log.Fatal(fmt.Errorf("main: getting options failed: %w", err))
 	}
@@ -312,10 +310,10 @@ const (
 	optionFilePositionEnum
 )
 
-func options(dir string) (opts []option, enums []enum, err error) {
+func options() (opts []option, enums []enum, err error) {
 	// Open doc
 	var f *os.File
-	if f, err = os.Open(filepath.Join(dir, "tmp", version, "src", "docs", "API", "API-socket-options.md")); err != nil {
+	if f, err = os.Open("/opt/srt/src/docs/API/API-socket-options.md"); err != nil {
 		err = fmt.Errorf("main: opening doc failed: %w", err)
 		return
 	}
@@ -386,7 +384,7 @@ scan:
 
 	// Read header
 	var b []byte
-	if b, err = os.ReadFile(filepath.Join(dir, "tmp", version, "include", "srt", "srt.h")); err != nil {
+	if b, err = os.ReadFile("/opt/srt/include/srt/srt.h"); err != nil {
 		err = fmt.Errorf("main: reading header failed: %w", err)
 		return
 	}

@@ -1,0 +1,30 @@
+{
+	"build": {
+		"args": {
+			"SRT_VERSION": "v1.5.3",
+			"GO_VERSION": "1.25.3"
+		},
+		"dockerfile": "Dockerfile"
+	},
+	"containerEnv": {
+		"CGO_LDFLAGS": "-L/opt/srt/lib/",
+		"CGO_CFLAGS": "-I/opt/srt/include/",
+		"LD_LIBRARY_PATH": "/opt/srt/lib",
+		"PKG_CONFIG_PATH": "/opt/srt/lib/pkgconfig"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode.cpptools-extension-pack",
+				"golang.go"
+			],
+			"settings": {
+				"remote.autoForwardPorts": false
+			}
+		}
+	},
+	"mounts": [
+		"source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/root/.ssh,readonly,type=bind"
+	],
+	"name": "asticode/go-astisrt"
+}

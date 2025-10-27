@@ -10,8 +10,6 @@ import (
 	"text/template"
 )
 
-const version = "v1.5.3"
-
 var r = regexp.MustCompile(`\nstatic const ([^ ]+) ([^ ]+) =`)
 
 type staticConst struct {
@@ -53,7 +51,7 @@ func main() {
 		log.Fatal(fmt.Errorf("main: getting working directory failed: %w", err))
 	}
 
-	cs, err := staticConsts(dir)
+	cs, err := staticConsts()
 	if err != nil {
 		log.Fatal(fmt.Errorf("main: getting stats failed: %w", err))
 	}
@@ -73,10 +71,10 @@ func main() {
 	}
 }
 
-func staticConsts(dir string) (cs []staticConst, err error) {
+func staticConsts() (cs []staticConst, err error) {
 	// Read header
 	var b []byte
-	if b, err = os.ReadFile(filepath.Join(dir, "tmp", version, "include", "srt", "srt.h")); err != nil {
+	if b, err = os.ReadFile("/opt/srt/include/srt/srt.h"); err != nil {
 		err = fmt.Errorf("main: reading header failed: %w", err)
 		return
 	}

@@ -13,8 +13,6 @@ import (
 	"unicode"
 )
 
-const version = "v1.5.3"
-
 var r1 = regexp.MustCompile(`struct CBytePerfMon\n\{([^\}]*)`)
 var r2 = regexp.MustCompile(`[\s]*([\w]+)[\s]*([\w]+);`)
 
@@ -119,7 +117,7 @@ func main() {
 		log.Fatal(fmt.Errorf("main: getting working directory failed: %w", err))
 	}
 
-	ss, err := stats(dir)
+	ss, err := stats()
 	if err != nil {
 		log.Fatal(fmt.Errorf("main: getting stats failed: %w", err))
 	}
@@ -139,10 +137,10 @@ func main() {
 	}
 }
 
-func stats(dir string) (ss []stat, err error) {
+func stats() (ss []stat, err error) {
 	// Read header
 	var b []byte
-	if b, err = os.ReadFile(filepath.Join(dir, "tmp", version, "include", "srt", "srt.h")); err != nil {
+	if b, err = os.ReadFile("/opt/srt/include/srt/srt.h"); err != nil {
 		err = fmt.Errorf("main: reading header failed: %w", err)
 		return
 	}

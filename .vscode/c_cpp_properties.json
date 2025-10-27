@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/opt/srt/include"
+            ]
+        }
+    ],
+    "version": 4
+}

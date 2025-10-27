@@ -2,7 +2,7 @@ name: Test
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "test-github-actions" ]
   pull_request:
     branches: [ "master" ]
 
@@ -11,8 +11,7 @@ jobs:
   test:
     strategy:
       matrix:
-        # Use macos-latest once latest version is compatible with libsrt 
-        os: [ubuntu-latest, macos-13]
+        os: [ubuntu-latest]
 
     env:
       LIBSRT_VERSION: v1.5.3
@@ -41,7 +40,13 @@ jobs:
     - if: ${{ steps.cache-libsrt.outputs.cache-hit != 'true' }}
       name: Install libsrt
       run: |
-        make install-srt srcPath=${{ env.LIBSRT_PATH }}/src version=${{ env.LIBSRT_VERSION }}
+        mkdir -p ${{ env.LIBSRT_PATH }}/src
+        cd ${{ env.LIBSRT_PATH }}/src
+        git clone https://github.com/Haivision/srt .
+        git checkout ${{ env.LIBSRT_VERSION }}
+        ./configure --prefix=..
+        make
+        make install
 
     - name: Set environment variables
       run: |
